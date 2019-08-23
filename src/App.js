@@ -1,26 +1,111 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useRef, useState} from 'react';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const gameApp = useRef(null);
+    const gameBox = useRef(null);
+
+    const [distX, setDistX] = useState(0);
+    const [distY, setDistY] = useState(0);
+    const [currentBox, setCurrentBox] = useState(0);
+
+    let boxes = [
+        {
+            id: 1, x: 0, y: 0, color: '#e2e2e2'
+        },
+        {
+            id: 2, x: 300, y: 0, color: '#e2291c'
+        },
+        {
+            id: 3, x: 600, y: 0, color: '#d6e247'
+        },
+        {
+            id: 4, x: 0, y: 300, color: '#543ee2'
+        },
+        {
+            id: 5, x: 300, y: 300, color: '#e25cd0'
+        },
+        {
+            id: 6, x: 600, y: 300, color: '#3be28c'
+        }
+    ];
+
+    const onDown = (e) => {
+        // Stop bubbling, this is important to avoid
+        // unexpected behaviours on mobile browsers:
+        e.preventDefault();
+
+        // Get the correct event source regardless the device:
+        // Btw, "e.changedTouches[0]" in this case for simplicity
+        // sake we'll use only the first touch event
+        // because we won't move more elements.
+        let evt = e.type === 'touchstart' ? e.changedTouches[0] : e;
+
+        // "Get the distance of the x/y", formula:
+        // A: Get current position x/y of the circle.
+        // Example: circle.offsetLeft
+        // B: Get the new position x/y.
+        // Example: evt.clientX
+        // That's all.
+        let x = Math.abs(gameBox.current.offsetLeft - evt.clientX);
+        let y = Math.abs(gameBox.current.offsetTop - evt.clientY);
+
+        setDistX(x);
+        setDistY(y);
+
+        // Disable pointer events in the circle to avoid
+        // a bug whenever it's moving.
+        gameBox.current.style.pointerEvents = 'none';
+    }
+
+    const onMove = (e) => {
+        // Update the position x/y of the circle element
+        // only if the "pointerEvents" are disabled,
+        // (check the "onDown" function for more details.)
+        if (gameBox.current.style.pointerEvents === 'none') {
+
+            // Get the correct event source regardless the device:
+            // Btw, "e.changedTouches[0]" in this case for simplicity
+            // sake we'll use only the first touch event
+            // because we won't move more elements.
+            var evt = e.type === 'touchmove' ? e.changedTouches[0] : e;
+
+            // Update top/left directly in the dom element:
+            gameBox.current.style.left = `${evt.clientX - distX}px`;
+            gameBox.current.style.top = `${evt.clientY - distY}px`;
+        };
+    }
+
+    const onUp = (e) => {
+        gameBox.current.style.pointerEvents = 'initial';
+    }
+
+    // let _boxes_view = boxes.map((item, index) => {
+    //
+    //     let style = {
+    //         backgroundColor: item.color
+    //     }
+    //
+    //     return <div
+    //         className={'game-app-box'}
+    //         draggable="true"
+    //         onMouseDown={onMove}
+    //         style={style}
+    //
+    //     > {item.id}</div>
+    // })
+
+    return (
+        <div className="game-app" ref={gameApp} onMouseMove={onMove} onMouseUp={onUp}>
+            <div
+                ref={gameBox}
+                className={'game-app-box'}
+                draggable="true"
+                onMouseDown={onDown}>
+                Box
+            </div>
+        </div>
+    );
 }
 
 export default App;
