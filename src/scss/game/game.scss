@@ -14,7 +14,12 @@
   position: absolute;
   left: 0;
   top: 0;
-  background-color: #6f42c1;
+  z-index: 2;
+  &.game-app-box_light{
+    opacity: 0.3;
+    z-index: 1;
+    border: 1px solid $border-color;
+  }
 
   touch-action: none;
   user-select: none;

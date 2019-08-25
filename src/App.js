@@ -71,7 +71,39 @@ function App() {
     const onUp = (e) => {
         if (!currentBox) return null;
         position.move = false;
+
+        //check if game is completed
+
+        let items = gameApp.current.childNodes;//.filter(item=> !item.classList.contains('game-app-box_light'));
+
+
+        let _items = items.forEach(item => {
+            // console.log(item)
+
+            let _items = checkClass(item, 'game-app-box_light');
+            if (!_items) {
+                return item;
+            }
+        })
+
+        console.log(_items);
     }
+
+    const addClass = (element, cssClass) => {
+        if (!checkClass(element, cssClass)) {
+            element.classList.add(cssClass);
+        }
+    }
+
+    const removeClass = (element, cssClass) => {
+        if (checkClass(element, cssClass)) {
+            element.classList.remove(cssClass);
+        }
+    }
+
+    const checkClass = (element, cssClass) => {
+        return element.classList.contains(cssClass);
+    };
 
     let _boxes_view = boxes.map((item, index) => {
 
@@ -80,16 +112,32 @@ function App() {
         }
 
         return <div className={'game-app-box'}
-                    draggable="true"
+                    key={index}
                     onMouseDown={(e) => onDown(e, item)}
                     style={style}>
-                {item.id}
-            </div>
+            {item.id}
+        </div>
+    });
+
+    let _boxes_finale = boxes.map((item, index) => {
+
+        let style = {
+            left: item.x,
+            top: item.y,
+            pointerEvent: 'unset'
+        }
+
+        return <div className={'game-app-box game-app-box_light'}
+                    key={index}
+                    style={style}>
+            {item.id}
+        </div>
     });
 
     return (
         <div className="game-app" ref={gameApp} onMouseMove={onMove} onMouseUp={onUp}>
             {_boxes_view}
+            {_boxes_finale}
         </div>
     );
 }
