@@ -63,6 +63,8 @@ function App() {
                 currentBox.style.backgroundColor = position.color;
             }
 
+            currentBox.innerHTML  =  `ID: ${position.id} X: ${evt.clientX - distX}, Y: ${evt.clientY - distY}`;
+
             currentBox.style.left = `${evt.clientX - distX}px`;
             currentBox.style.top = `${evt.clientY - distY}px`;
         }
@@ -86,7 +88,7 @@ function App() {
             }
         })
 
-        console.log(_items);
+        // console.log(_items);
     }
 
     const addClass = (element, cssClass) => {
@@ -115,7 +117,7 @@ function App() {
                     key={index}
                     onMouseDown={(e) => onDown(e, item)}
                     style={style}>
-            {item.id}
+            ID: {item.id} /
         </div>
     });
 
@@ -130,15 +132,24 @@ function App() {
         return <div className={'game-app-box game-app-box_light'}
                     key={index}
                     style={style}>
-            {item.id}
+                    ID: {item.id} /
+                    X: {item.x},Y {item.y}
+
         </div>
     });
 
     return (
-        <div className="game-app" ref={gameApp} onMouseMove={onMove} onMouseUp={onUp}>
-            {_boxes_view}
-            {_boxes_finale}
+        <div>
+            <div className="game-app" ref={gameApp} onMouseMove={onMove} onMouseUp={onUp}>
+                {_boxes_view}
+                {_boxes_finale}
+            </div>
+            <div className="explain">
+                Put each square on its position. You have to sooo prices is made in Germany :P
+            </div>
         </div>
+
+
     );
 }
 
